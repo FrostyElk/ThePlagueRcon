@@ -70,7 +70,7 @@ class RconConnection(object):
         if auth_resp.pkt_id == -1:
             raise RconAuthError('Bad password')
 
-    def exec_command(self, command):
+    def exec_command(self, command, ignore_response=False):
         """Execute the given RCON command.
 
         Parameters:
@@ -81,6 +81,10 @@ class RconConnection(object):
         cmd_pkt = RconPacket(next(self.pkt_id), SERVERDATA_EXECCOMMAND,
                              command)
         self._send_pkt(cmd_pkt)
+
+        if ignore_response:
+            return None
+            
         resp = self.read_response(cmd_pkt, True)
 
         return resp.body
